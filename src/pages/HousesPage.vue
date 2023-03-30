@@ -15,7 +15,7 @@
   <!-- NOTE - ModalComponent goes here -->
   <ModalComponent>
     <!-- NOTE slots this HouseForm inside the ModalComponent where I have my <slot> tag -->
-    <!-- <HouseForm /> -->
+    <HouseForm />
   </ModalComponent>
 </template>
 
@@ -27,6 +27,8 @@ import Pop from "../utils/Pop.js";
 import { housesService } from "../services/HousesService.js";
 import { onMounted, computed } from "vue";
 import ModalComponent from "../components/ModalComponent.vue";
+import HouseCard from "../components/HouseCard.vue";
+import HouseForm from "../components/HouseForm.vue";
 
 export default {
   setup() {
@@ -47,7 +49,7 @@ export default {
       account: computed(() => AppState.account)
     };
   },
-  components: { ModalComponent }
+  components: { ModalComponent, HouseCard, HouseForm }
 }
 </script>
 

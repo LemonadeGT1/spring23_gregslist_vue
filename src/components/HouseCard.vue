@@ -1,7 +1,7 @@
 <template>
   <router-link :to="{ name: 'HouseDetails', params: { houseId: house.id } }">
     <div class="elevation-3 rounded bg-light border border-1 border-dark">
-      <img :src="house.imgUrl" :alt="house.description" class="img-fluid rounded-top">
+      <img :src="house.imgUrl" :title="house.description" class="img-fluid rounded-top">
       <div class="text-center p-3">
         <h3 class="fs-4">{{ 'Beds: ' + house.bedrooms + ' | Baths: ' + house.bathrooms + ' | Levels: ' + house.levels }}
         </h3>
@@ -9,11 +9,11 @@
       <!-- NOTE only show these details if you're on the HouseDetails Page -->
       <div v-if="route.name == 'HouseDetails'" class="p-4">
         <div class="d-flex justify-content-around">
-          <h2>{{ house.year }}</h2>
-          <h2>{{ house.price }}</h2>
+          <h2>Year Built: {{ house.year }}</h2>
+          <h2>Price: ${{ house.price.toLocaleString() }}</h2>
         </div>
         <p class="fw-bold fs-3">{{ house.description }}</p>
-        <div v-if="house.creatorId == account.id" class="d-flex justify-content-around">
+        <div v-if="house.seller.id == account.id" class="d-flex justify-content-around">
           <button class="btn btn-danger" @click.stop="deleteHouse()">Delete House!</button>
           <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info">🖊️ Edit House</button>
         </div>
@@ -43,7 +43,19 @@ export default {
     const router = useRouter();
     return {
       route,
-      account: computed(() => AppState.account)
+      account: computed(() => AppState.account),
+      async deleteHouse() {
+        try {
+          if (await Pop.confirm()) {
+            const houseId = props.house.id
+            await housesService.deleteHouse(houseId)
+            router.push({ name: "Houses" })
+          }
+        } catch (error) {
+          logger.log(error)
+          Pop.error(error.message)
+        }
+      }
     };
   },
 };
